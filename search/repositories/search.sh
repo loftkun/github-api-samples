@@ -2,10 +2,13 @@
 
 set -eu
 
-# You can use authenticated requests to getting a higher rate limit.
+# Basic Authentication
+USER=
+PASS=
+
+# also, You can use authenticated requests to getting a higher rate limit.
 # See https://developer.github.com/v3/#rate-limiting
-USER=your_username
-PASS=your_password
+TOKEN=
 
 # GitHub search API Endpoint
 # See https://developer.github.com/v3/search/
@@ -16,10 +19,6 @@ API=https://api.github.com/search/repositories
 # See https://developer.github.com/v3/search/#parameters
 # keywords
 # be careful for uri encode (ex. white space -> + )
-KEYWORD="web+framework"
-#KEYWORD="rest"
-#KEYWORD="router"
-#KEYWORD="micro"
 #KEYWORD="microservice"
 
 # language
@@ -40,7 +39,7 @@ PER_PAGE=10
 QUERY="${KEYWORD}+in:name,description,readme+language:${LANGUAGE}+stars:>=${STARS}&sort=${SORT}&order=${ORDER}&per_page=${PER_PAGE}"
 
 # curl basic authentication param
-CURL_BASIC="-u ${USER}:${PASS}"
+#CURL_BASIC="-u ${USER}:${PASS}"
 
 # jq query
 JQ_QUERY=".items[] | [.full_name , .stargazers_count, .html_url, .description] | @csv"
@@ -54,7 +53,8 @@ do
 
   # search
   #echo "curl ${CURL_BASIC} \"${API}?q=${QUERY}&page=${page}\""
-  json=$(curl ${CURL_BASIC} "${API}?q=${QUERY}&page=${page}" 2>/dev/null)
+  #json=$(curl ${CURL_BASIC} "${API}?q=${QUERY}&page=${page}" 2>/dev/null)
+  json=$(curl -H "Authorization: token ${TOKEN}" "${API}?q=${QUERY}&page=${page}" 2>/dev/null)
 
   # check result 
   length=$(echo ${json} | jq -r ".items | length" )
