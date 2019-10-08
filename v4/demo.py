@@ -84,7 +84,7 @@ test03={ 'query' : """
 # https://developer.github.com/v4/object/searchresultitemconnection/
 test04={ 'query' : """
   query {
-    search(query: "language:python stars:>=1000", type: REPOSITORY, first: 10) {
+    search(query: "language:python stars:>=1000 sort:stars", type: REPOSITORY, first: 10) {
       edges {
         node {
           ... on Repository {
